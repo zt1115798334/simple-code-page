@@ -1,12 +1,12 @@
 <template>
   <el-row>
     <div>
-      <el-button type="primary" @click="getAllTable()">获取所有表格</el-button>
+      <el-button type="primary" @click="getAllTable">获取所有表格</el-button>
     </div>
     <div>
       <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-      <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
-        <el-checkbox v-for="city in cities" :label="city" :key="city">{{ city }}</el-checkbox>
+      <el-checkbox-group v-model="checkedTableNames" @change="handleCheckedTableNamesChange">
+        <el-checkbox v-for="t in tableNames" :label="t" :key="t">{{ t.tableName }}</el-checkbox>
       </el-checkbox-group>
     </div>
     <div>
@@ -17,7 +17,7 @@
       </el-table>
     </div>
     <div>
-      <el-button type="primary">主要按钮</el-button>
+      <el-button type="primary" @click="showColumn">获取表详细信息</el-button>
     </div>
     <div style="width: 500px">
       <span style="font-size: 15px">项目名称为：</span>
@@ -34,13 +34,13 @@
 </template>
 
 <script>
-const cityOptions = ['上海', '北京', '广州', '深圳'];
 export default {
   data() {
     return {
       checkAll: false,
-      checkedCities: ['上海', '北京'],
-      cities: cityOptions,
+      tableNameOptions: [],
+      checkedTableNames: [],
+      tableNames: [],
       isIndeterminate: true,
       tableData: [
         {
@@ -66,17 +66,32 @@ export default {
   },
   methods: {
     handleCheckAllChange(val) {
-      this.checkedCities = val ? cityOptions : [];
+      console.log(val);
+      this.checkedTableNames = val ? this.tableNameOptions : [];
       this.isIndeterminate = false;
     },
-    handleCheckedCitiesChange(value) {
+    handleCheckedTableNamesChange(value) {
+      console.log(value);
       let checkedCount = value.length;
-      this.checkAll = checkedCount === this.cities.length;
-      this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
+      this.checkAll = checkedCount === this.tableNames.length;
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.tableNames.length;
     },
 
     getAllTable() {
       this.$store.dispatch("showTable", {}).then(res => {
+        this.tableNameOptions = res.list;
+        this.tableNames = res.list || [];
+      })
+    },
+    showColumn() {
+      let param = new FormData();
+      param.append('tableNames', this.checkedTableNames)
+      this.$store.dispatch("showColumn", {param}).then(res => {
+        console.log(res)
+      })
+    },
+    getTableTrans() {
+      this.$store.dispatch("getTableTrans", {}).then(res => {
         console.log(res)
       })
     }
