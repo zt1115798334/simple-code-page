@@ -6,7 +6,7 @@
     <div>
       <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
       <el-checkbox-group v-model="checkedTableNames" @change="handleCheckedTableNamesChange">
-        <el-checkbox v-for="t in tableNames" :label="t" :key="t">{{ t.tableName }}</el-checkbox>
+        <el-checkbox v-for="(t,k) in tableNames" :label="t" :key="k" :value="t.code">{{t.tableName}}</el-checkbox>
       </el-checkbox-group>
     </div>
     <div>
@@ -17,7 +17,7 @@
       </el-table>
     </div>
     <div>
-      <el-button type="primary" @click="showColumn">获取表详细信息</el-button>
+      <el-button type="primary" @click="getSelectTable">获取表详细信息</el-button>
     </div>
     <div style="width: 500px">
       <span style="font-size: 15px">项目名称为：</span>
@@ -66,7 +66,6 @@ export default {
   },
   methods: {
     handleCheckAllChange(val) {
-      console.log(val);
       this.checkedTableNames = val ? this.tableNameOptions : [];
       this.isIndeterminate = false;
     },
@@ -83,9 +82,12 @@ export default {
         this.tableNames = res.list || [];
       })
     },
-    showColumn() {
+    getSelectTable() {
+      const tableCodes = JSON.parse(JSON.stringify(this.checkedTableNames));
+      console.log(tableCodes)
+      console.log(this.checkedTableNames)
       let param = new FormData();
-      param.append('tableNames', this.checkedTableNames)
+      // param.append('tableCodes', tableCodes)
       this.$store.dispatch("showColumn", {param}).then(res => {
         console.log(res)
       })
