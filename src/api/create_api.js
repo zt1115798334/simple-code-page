@@ -25,7 +25,7 @@ export function createAPI() {
          * @param params  请求参数
          * @returns {Promise}
          */
-        post(target, params = {}) {
+        post(target, params) {
             // let token = getCookie('AUTHENTICATE_TOKEN')
             return new Promise((resolve, reject) => {
                 axios.post(target, params, {

@@ -6,7 +6,7 @@ export default {
             return res
         })
     },
-    showColumn: ({param}) => {
+    showColumn: (param) => {
         return showColumn(param).then((res) => {
             return res
         })
