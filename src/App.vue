@@ -1,64 +1,64 @@
 <template>
-  <el-row>
-    <div>
-      <el-button type="primary" @click="getAllTable">获取所有表格</el-button>
-    </div>
-    <div>
-      <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-      <el-checkbox-group v-model="checkedTableNames" @change="handleCheckedTableNamesChange">
-        <el-row>
-          <el-col :span="6" v-for="(t,k) in tableNames" :key="k">
-            <div class="grid-content bg-purple">
-              <el-checkbox :label="t.code">{{ t.tableName }}</el-checkbox>
-            </div>
-          </el-col>
-        </el-row>
-      </el-checkbox-group>
-    </div>
-    <div>
-      <el-button type="primary" @click="getSelectTable">获取表详细信息</el-button>
-    </div>
-    <div>
+  <el-container class="outer" id="app">
+    <el-main>
+      <el-row type="flex">
+        <el-button type="primary" @click="getAllTable">获取所有表格</el-button>
+      </el-row>
+      <el-row>
+        <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+        <el-checkbox-group v-model="checkedTableNames" @change="handleCheckedTableNamesChange">
+          <el-row>
+            <el-col :span="6" v-for="(t,k) in tableNames" :key="k">
+              <div class="grid-content bg-purple">
+                <el-checkbox :label="t.code">{{ t.tableName }}</el-checkbox>
+              </div>
+            </el-col>
+          </el-row>
+        </el-checkbox-group>
+      </el-row>
+      <el-row>
+        <el-button type="primary" @click="getSelectTable">获取表详细信息</el-button>
+      </el-row>
       <div v-for="(table,k) in tableInfos" :key="k">
         <el-row>
           <el-col :span="24">
             <div class="grid-content bg-purple-light ac">表名: {{ table.tableNameTrans }}</div>
           </el-col>
         </el-row>
-        <el-row align="middle">
+        <el-row>
           <el-col :span="4">
-            <div class="grid-content bg-purple-light ac">列名</div>
+            <div class="grid-content bg-purple ac">列名</div>
           </el-col>
           <el-col :span="4">
             <div class="grid-content bg-purple ac">类型</div>
           </el-col>
           <el-col :span="4">
-            <div class="grid-content bg-purple-light ac">描述</div>
+            <div class="grid-content bg-purple ac">描述</div>
           </el-col>
           <el-col :span="4">
             <div class="grid-content bg-purple ac">是否范围查询</div>
           </el-col>
           <el-col :span="4">
-            <div class="grid-content bg-purple-light ac">是否等于查询</div>
+            <div class="grid-content bg-purple ac">是否等于查询</div>
           </el-col>
           <el-col :span="4">
-            <div class="grid-content bg-purple-light ac"></div>
+            <div class="grid-content bg-purple ac"></div>
           </el-col>
         </el-row>
 
         <el-row v-for="(column,l) in table.columns" :key="l">
           <el-col :span="4">
-            <div class="grid-content bg-purple-white ac">
-              <el-input size="small" v-model="column.columnNameTrans"></el-input>
+            <div class="grid-content bg-purple ac">
+              <el-input class="bg-purple" v-model="column.columnNameTrans"></el-input>
             </div>
           </el-col>
           <el-col :span="4">
-            <div class="grid-content bg-purple-white ac">
+            <div class="grid-content bg-purple ac">
               <el-input v-model="column.typeNameTrans"></el-input>
             </div>
           </el-col>
           <el-col :span="4">
-            <div class="grid-content bg-purple-light ac">{{ column.remarks }}</div>
+            <div class="grid-content bg-purple ac">{{ column.remarks }}</div>
           </el-col>
           <el-col :span="4">
             <div class="grid-content bg-purple ac">
@@ -66,33 +66,23 @@
             </div>
           </el-col>
           <el-col :span="4">
-            <div class="grid-content bg-purple-light ac">
+            <div class="grid-content bg-purple ac">
               <el-checkbox :label="column.code">equal</el-checkbox>
             </div>
           </el-col>
           <el-col :span="4">
-            <div class="grid-content bg-purple-light ac"></div>
+            <div class="grid-content bg-purple ac"></div>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
-            <div class="grid-min-content bg-purple-light "></div>
+            <div class="grid-min-content bg-purple-white "></div>
           </el-col>
         </el-row>
       </div>
-    </div>
-    <div style="width: 500px">
-      <span style="font-size: 15px">项目名称为：</span>
-      <el-input v-model="input" placeholder="请输入项目名称"></el-input>
-    </div>
-    <div>
-      <span style="font-size: 15px">是否使用 创建基础文件：</span>
-      <el-checkbox v-model="checked"></el-checkbox>
-    </div>
-    <div>
-      <el-button type="success">成功按钮</el-button>
-    </div>
-  </el-row>
+    </el-main>
+  </el-container>
+
 </template>
 
 <script>
@@ -1006,34 +996,5 @@ export default {
 <style>
 @import "./assets/css/regist.less";
 
-.el-row {
-  margin-bottom: 5px;
-}
-.el-col {
-  border-radius: 4px;
-}
-.bg-purple-dark {
-  background: #99a9bf;
-}
-.bg-purple {
-  background: #d3dce6;
-}
 
-.bg-purple-white {
-  background: #ffffff;
-}
-.bg-purple-light {
-  background: #e5e9f2;
-}
-.grid-min-content {
-  min-height: 8px;
-}
-
-.grid-content {
-  min-height: 40px;
-}
-.row-bg {
-  padding: 10px 0;
-  background-color: #f9fafc;
-}
 </style>
