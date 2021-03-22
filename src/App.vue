@@ -31,7 +31,6 @@
       <el-button style="margin-top: 12px;" @click="next">下一步</el-button>
       <el-collapse v-model="activeName" accordion>
         <el-collapse-item title="表信息" name="1">
-
           <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选
           </el-checkbox>
           <el-checkbox-group v-model="checkedTableNames" @change="handleCheckedTableNamesChange">
@@ -109,7 +108,6 @@
           </div>
         </el-collapse-item>
       </el-collapse>
-
     </el-main>
   </el-container>
 
@@ -144,7 +142,7 @@ export default {
       if (this.active === 2) {
         this.createTableTrans();
       }
-      if (this.active++ > 3) this.active = 0;
+      if (this.active > 3) this.active = 0;
     },
     handleCheckAllChange(val) {
       this.checkedTableNames = val ? this.tableNameOptions : [];
@@ -156,6 +154,13 @@ export default {
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.tableNames.length;
     },
     getAllTable() {
+      if (this.projectName === undefined || this.projectName === '') {
+        this.$notify.error({
+          title: '错误',
+          message: '请填写项目名称！！'
+        });
+        return;
+      }
       this.$store.dispatch("showTable", {}).then(res => {
         const list = res.list;
         const dd = [];
@@ -164,14 +169,24 @@ export default {
         });
         this.tableNameOptions = dd;
         this.tableNames = list || [];
-      })
+        this.active++;
+      });
     },
     getSelectTable() {
+      if (this.checkedTableNames === undefined || this.checkedTableNames.length === 0) {
+        this.$notify.error({
+          title: '错误',
+          message: '请勾选需要生成的表！！'
+        });
+        return;
+      }
       let param = new FormData();
       param.append('tableCodes', this.checkedTableNames.join(","));
       this.$store.dispatch("showColumn", {param}).then(res => {
         const list = res.list;
         this.tableInfos = list || [];
+        this.active++;
+
       })
     },
     createTableTrans() {
@@ -182,6 +197,7 @@ export default {
       };
       this.$store.dispatch("getTableTrans", params).then(res => {
         if (res.meta.success) {
+          this.active++;
           this.$notify({
             title: '成功',
             message: '生成成功了',
