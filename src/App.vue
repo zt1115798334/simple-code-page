@@ -3,16 +3,17 @@
     <el-main>
       <el-row>
         <el-col :span="1.5">
-          <div class="grid-content">
+          <div>
             请输入项目名称：
           </div>
-        </el-col><el-col :span="3">
-        <div class="grid-content">
-          <el-input class="bg-purple" v-model="projectName"></el-input>
-        </div>
-      </el-col>
+        </el-col>
+        <el-col :span="3">
+          <div>
+            <el-input class="bg-purple" v-model="projectName"></el-input>
+          </div>
+        </el-col>
         <el-col :span="6">
-          <div class="grid-content">
+          <div>
             <el-switch
                 v-model="createBasics"
                 active-text="创建基础文件"
@@ -31,16 +32,17 @@
       <el-collapse v-model="activeName" accordion>
         <el-collapse-item title="表信息" name="1">
 
-            <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-            <el-checkbox-group v-model="checkedTableNames" @change="handleCheckedTableNamesChange">
-              <el-row>
-                <el-col :span="6" v-for="(t,k) in tableNames" :key="k">
-                  <div class="grid-content">
-                    <el-checkbox :label="t.code">{{ t.tableName }}</el-checkbox>
-                  </div>
-                </el-col>
-              </el-row>
-            </el-checkbox-group>
+          <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选
+          </el-checkbox>
+          <el-checkbox-group v-model="checkedTableNames" @change="handleCheckedTableNamesChange">
+            <el-row>
+              <el-col :span="6" v-for="(t,k) in tableNames" :key="k">
+                <div>
+                  <el-checkbox :label="t.code">{{ t.tableName }}</el-checkbox>
+                </div>
+              </el-col>
+            </el-row>
+          </el-checkbox-group>
 
         </el-collapse-item>
         <el-collapse-item title="字段信息" name="2">
