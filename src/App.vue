@@ -26,7 +26,7 @@
         <el-step title="开始"></el-step>
         <el-step title="获取表格"></el-step>
         <el-step title="获取表格详情"></el-step>
-        <el-step title="创建文件"></el-step>
+        <el-step title="创建文件完成"></el-step>
       </el-steps>
       <el-button style="margin-top: 12px;" @click="next">下一步</el-button>
       <el-collapse v-model="activeName" accordion>
