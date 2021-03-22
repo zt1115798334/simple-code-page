@@ -8,6 +8,7 @@ export function createAPI() {
     axios.defaults.withCredentials = true;
     axios.defaults.timeout = 60000;
     axios.interceptors.response.use(res => {
+
         if (res.status >= 200 && res.status < 400) {
             if (res.data.meta && [3001, 3002, 3003].indexOf(res.data.meta.code) >= 0) {
                 return
@@ -26,16 +27,26 @@ export function createAPI() {
          * @returns {Promise}
          */
         post(target, params) {
-            // let token = getCookie('AUTHENTICATE_TOKEN')
             return new Promise((resolve, reject) => {
                 axios.post(target, params, {
                     responseType: 'json',
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    }
+                    headers: {"Content-Type": "application/x-www-form-urlencoded"}
                 }).then(res => {
-                    resolve(res.data)
+                    console.log(111)
+                    console.log(res)
+                    if (res.data.meta.success) {
+                        resolve(res.data);
+                    }else{
+                        this.$notify.error({
+                            title: '错误',
+                            message: res.data.message
+                        });
+                    }
                 }).catch((err) => {
+                    this.$notify.error({
+                        title: '错误',
+                        message: '系统错误'
+                    });
                     reject(err)
                 })
             })
@@ -44,11 +55,16 @@ export function createAPI() {
             return new Promise((resolve, reject) => {
                 axios.post(target, params, {
                     responseType: 'json',
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
+                    headers: {"Content-Type": "application/json"}
                 }).then(res => {
-                    resolve(res.data)
+                    if (res.data.meta.success) {
+                        resolve(res.data);
+                    }else{
+                        this.$notify.error({
+                            title: '错误',
+                            message: res.data.message
+                        });
+                    }
                 }).catch((err) => {
                     reject(err.data)
                 })

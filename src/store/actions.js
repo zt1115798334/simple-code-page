@@ -1,17 +1,21 @@
 import {getTableTrans, showColumn, showTable} from "@/api";
 
 export default {
-    showTable: ({param}) => {
-        return showTable(param).then((res) => {
-            return res
-        })
-    },
-    showColumn: (param) => {
+    showColumn: ({commit}, {param}) => {
+        console.log(commit)
         return showColumn(param).then((res) => {
             return res
         })
     },
-    getTableTrans: ({param}) => {
+    showTable: ({commit}, {param}) => {
+        console.log(commit)
+        return showTable(param).then((res) => {
+            return res
+        })
+    },
+
+    getTableTrans: ({commit}, param) => {
+        console.log(commit)
         return getTableTrans(param).then((res) => {
             return res
         })

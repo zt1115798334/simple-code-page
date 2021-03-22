@@ -11,5 +11,5 @@ export function showColumn(param) {
 }
 
 export function getTableTrans(param) {
-    return api.post('/api/getTableTrans', param)
+    return api.postJSON('/api/getTableTrans', param)
 }
