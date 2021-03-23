@@ -285,6 +285,20 @@ export default {
       })
     },
     ymlExtract() {
+      if (this.ymlFile === undefined || this.ymlFile === null) {
+        this.$notify.error({
+          title: '错误',
+          message: '请上传文件！！'
+        });
+        return;
+      }
+      if (this.transferKey === undefined || this.transferKey.length === 0) {
+        this.$notify.error({
+          title: '错误',
+          message: '请勾选需要转换的元素！！'
+        });
+        return;
+      }
       this.transferKey.map(item => {
         this.transferValue.push(this.transferData[item].label)
       })
