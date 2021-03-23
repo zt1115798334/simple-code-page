@@ -32,8 +32,6 @@ export function createAPI() {
                     responseType: 'json',
                     headers: {"Content-Type": "application/x-www-form-urlencoded"}
                 }).then(res => {
-                    console.log(111)
-                    console.log(res)
                     if (res.data.meta.success) {
                         resolve(res.data);
                     }else{
@@ -42,6 +40,22 @@ export function createAPI() {
                             message: res.data.message
                         });
                     }
+                }).catch((err) => {
+                    this.$notify.error({
+                        title: '错误',
+                        message: '系统错误'
+                    });
+                    reject(err)
+                })
+            })
+        },
+        postDown(target, params) {
+            return new Promise((resolve, reject) => {
+                axios.post(target, params, {
+                    responseType: 'blob',
+                    headers: {"Content-Type": "application/x-www-form-urlencoded"}
+                }).then(res => {
+                    resolve(res);
                 }).catch((err) => {
                     this.$notify.error({
                         title: '错误',

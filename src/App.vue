@@ -112,16 +112,27 @@
           </el-collapse>
         </el-tab-pane>
         <el-tab-pane label="Yml变量提取">
+          <el-button type="primary" icon="el-icon-s-tools" @click="ymlExtract">转换</el-button>
+          <el-button type="primary" icon="el-icon-document-copy" @click="copyYmlTransform">转换后的Yml配置</el-button>
+          <el-button type="primary" icon="el-icon-document-copy" @click="copyEnvironmentVariable">提取的环境变量</el-button>
           <el-collapse v-model="activeYml">
             <el-collapse-item title="yml配置" name="1">
-              <el-input
-                  type="textarea"
-                  :rows="10"
-                  placeholder="请输入内容"
-                  v-model="ymlOriginal">
-              </el-input>
+              <el-upload
+                  class="upload-demo"
+                  drag
+                  multiple
+                  :before-upload="ymlAnalysis" action="">
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                <div class="el-upload__tip" slot="tip">只能上传yml文件，且不超过500kb</div>
+              </el-upload>
             </el-collapse-item>
-            <el-collapse-item title="转换后的Yml配置" name="2">
+            <el-collapse-item title="转换元素" name="2">
+              <template>
+                <el-transfer v-model="transferKey" :data="transferData"></el-transfer>
+              </template>
+            </el-collapse-item>
+            <el-collapse-item title="转换后的Yml配置" name="3">
               <el-input
                   type="textarea"
                   :rows="10"
@@ -129,7 +140,7 @@
                   v-model="ymlTransform">
               </el-input>
             </el-collapse-item>
-            <el-collapse-item title="提取的环境变量" name="3">
+            <el-collapse-item title="提取的环境变量" name="4">
               <el-input
                   type="textarea"
                   :rows="10"
@@ -139,7 +150,17 @@
             </el-collapse-item>
           </el-collapse>
         </el-tab-pane>
-        <el-tab-pane label="Word文件格式化"></el-tab-pane>
+        <el-tab-pane label="Word文件格式化">
+          <el-upload
+              class="upload-demo"
+              drag
+              multiple
+              :before-upload="formatWordXml" action="">
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            <div class="el-upload__tip" slot="tip">只能上传xml文件，且不超过500kb</div>
+          </el-upload>
+        </el-tab-pane>
       </el-tabs>
     </el-main>
   </el-container>
@@ -155,6 +176,10 @@ export default {
       activeYml: ['1'],
       checkAll: false,
       checked: false,
+      ymlFile:null,
+      transferData: [],
+      transferKey:[],
+      transferValue:[],
       ymlOriginal: '',
       ymlTransform: '',
       environmentVariable: '',
@@ -242,6 +267,93 @@ export default {
           });
         }
       })
+    },
+    ymlAnalysis(file) {
+      this.ymlFile = file;
+      let param = new FormData();
+      param.append('file', file);
+      this.$store.dispatch("ymlAnalysis", {param}).then(res => {
+        if (res.meta.success) {
+          for (let i = 1; i <= res.list.length; i++) {
+            this.transferData.push({
+              key: i,
+              label: res.list[i]
+            });
+          }
+
+        }
+      })
+    },
+    ymlExtract() {
+      this.transferKey.map(item => {
+        this.transferValue.push(this.transferData[item].label)
+      })
+      let param = new FormData();
+      param.append('file', this.ymlFile);
+      param.append('word', this.transferValue);
+      this.$store.dispatch("ymlExtract", {param}).then(res => {
+        if (res.meta.success) {
+          this.ymlTransform = res.data.yml;
+          this.environmentVariable = res.data.env;
+        }
+      })
+    },
+
+    copyYmlTransform() {
+      this.copyToClipboard(this.ymlTransform); // 需要复制的文本内容
+      this.$message.success('复制成功');
+    },
+    copyEnvironmentVariable() {
+      this.copyToClipboard(this.environmentVariable); // 需要复制的文本内容
+      this.$message.success('复制成功');
+    },
+    // 点击复制到剪贴板函数
+    copyToClipboard(content) {
+      if (window.clipboardData) {
+        window.clipboardData.setData('text', content);
+      } else {
+        (function (content) {
+          document.oncopy = function (e) {
+            e.clipboardData.setData('text', content);
+            e.preventDefault();
+            document.oncopy = null;
+          }
+        })(content);
+        document.execCommand('Copy');
+      }
+    },
+    formatWordXml(file) {
+      this.ymlFile = file;
+      let param = new FormData();
+      param.append('file', file);
+      this.$store.dispatch("formatWordXml", {param}).then(res => {
+        let headers = res.headers
+        let contentType = headers['content-type']
+        if (!res.data) {
+          console.error('响应异常：', res)
+        } else {
+          const blob = new Blob([res.data], {type: contentType})
+          this.downFile(blob, 'document.xml')
+
+
+        }
+      })
+    },
+    downFile (blob, fileName) {
+      // 非IE下载
+      if ('download' in document.createElement('a')) {
+        let link = document.createElement('a')
+        link.href = window.URL.createObjectURL(blob) // 创建下载的链接
+        link.download = fileName // 下载后文件名
+        link.style.display = 'none'
+        document.body.appendChild(link)
+        link.click() // 点击下载
+        window.URL.revokeObjectURL(link.href) // 释放掉blob对象
+        document.body.removeChild(link) // 下载完成移除元素
+      } else {
+        // IE10+下载
+        window.navigator.msSaveBlob(blob, fileName)
+      }
     }
   }
 }
