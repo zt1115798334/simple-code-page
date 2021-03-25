@@ -274,7 +274,7 @@ export default {
       param.append('file', file);
       this.$store.dispatch("ymlAnalysis", {param}).then(res => {
         if (res.meta.success) {
-          for (let i = 1; i <= res.list.length; i++) {
+          for (let i = 0; i < res.list.length; i++) {
             this.transferData.push({
               key: i,
               label: res.list[i]
