@@ -179,7 +179,6 @@ export default {
       ymlFile:null,
       transferData: [],
       transferKey:[],
-      transferValue:[],
       ymlOriginal: '',
       ymlTransform: '',
       environmentVariable: '',
@@ -275,10 +274,7 @@ export default {
       this.$store.dispatch("ymlAnalysis", {param}).then(res => {
         if (res.meta.success) {
           for (let i = 0; i < res.list.length; i++) {
-            this.transferData.push({
-              key: i,
-              label: res.list[i]
-            });
+            this.transferData = res.list;
           }
 
         }
@@ -299,12 +295,9 @@ export default {
         });
         return;
       }
-      this.transferKey.map(item => {
-        this.transferValue.push(this.transferData[item].label)
-      })
       let param = new FormData();
       param.append('file', this.ymlFile);
-      param.append('word', this.transferValue);
+      param.append('key', this.transferKey);
       this.$store.dispatch("ymlExtract", {param}).then(res => {
         if (res.meta.success) {
           this.ymlTransform = res.data.yml;
